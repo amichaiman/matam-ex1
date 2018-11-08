@@ -5,7 +5,7 @@
 long getNumberOfBps(SeqStatsContainer *container);
 
 void goToNextSeq(FILE* fp){
-    while (fgetc(fp) != '\n');
+    while (fgetc(fp) != '>');
 }
 void goToNextLine(FILE *fp) {
     while (fgetc(fp) != '\n');
@@ -28,12 +28,11 @@ long getSeqLen(FILE *fp) {
             flag = 1;
         }
     }
-    fseek(fp, len, SEEK_CUR);
+    fseek(fp, -len, SEEK_CUR);
     return len;
 }
 void readSeq(char *buffer, long len, FILE *fp) {
     long i;
-
     for (i=0; i<len; i++){
         buffer[i] = (char) fgetc(fp);
     }
@@ -76,7 +75,6 @@ int AddSeqsToSeqStatsContainer(SeqStatsContainer *container, char *filename) {
         seqLen = getSeqLen(fp);
         buffer = (char*) malloc(seqLen* sizeof(char));
         readSeq(buffer, seqLen, fp);
-
         /* add SeqStats struct to object array */
         container->seqStatArray[i] = CreateSeqStats(name, buffer);
     }
